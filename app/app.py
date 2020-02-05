@@ -23,6 +23,11 @@ from timeit import default_timer as timer
 tf.config.optimizer.set_jit(True)
 tf.compat.v1.enable_eager_execution()
 
+tf.app.flags.DEFINE_string('bind', '', 'Server address')
+tf.app.flags.DEFINE_integer('timeout', 30, 'Server timeout')
+tf.app.flags.DEFINE_string('host', '', 'Server host')
+tf.app.flags.DEFINE_integer('port', 5000, 'Server port')
+
 app = Flask(__name__, template_folder='template')
 app.secret_key = "v9y/B?E(H+MbQeTh"
 
@@ -405,5 +410,3 @@ def result_string(result):
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80, debug=True)
-    # from waitress import serve
-    # serve(app, host="0.0.0.0", port=8080)
