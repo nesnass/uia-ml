@@ -65,7 +65,6 @@ tf.app.flags.DEFINE_string('bind', '', 'Server address')
 tf.app.flags.DEFINE_integer('timeout', 30, 'Server timeout')
 tf.app.flags.DEFINE_string('host', '', 'Server host')
 tf.app.flags.DEFINE_integer('port', 80, 'Server port')
-tf.app.flags.DEFINE_integer('port', 5000, 'Server other port')
 
 FLAGS = tf.app.flags.FLAGS
 
