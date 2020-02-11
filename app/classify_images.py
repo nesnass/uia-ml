@@ -49,14 +49,25 @@ to use this script to perform image recognition.
 https://tensorflow.org/tutorials/image_recognition/
 """
 
-import os.path
-import re
 import glob
 import json
-import psutil
+import os
+import os.path
+import pathlib
+import re
+import sys
+import tarfile
 from collections import defaultdict
+import cv2
 import numpy as np
+import psutil
 import tensorflow as tf
+from annoy import AnnoyIndex
+from flask import Flask, request, redirect, render_template, jsonify
+from scipy import spatial
+from six.moves import urllib
+from werkzeug.utils import secure_filename
+from timeit import default_timer as timer
 
 tf.config.optimizer.set_jit(True)
 tf.compat.v1.enable_eager_execution()
