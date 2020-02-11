@@ -254,7 +254,7 @@ def run_inference_on_images(image_list, output_dir):
                 print('Memory After Prediction', mem5 / (1024 ** 2), 'MB')
 
                 # # detect number of faces
-                num_faces = detect_num_faces(image)
+                num_faces = face_recognition.detect_num_faces(image)
                 image_to_labels['number_of_faces'].append(num_faces)
 
                 process = psutil.Process(os.getpid())
