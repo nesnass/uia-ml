@@ -4,8 +4,8 @@ WORKDIR /var/app
 COPY . .
 COPY requirements.txt .
 # Fetch app specific dependencies
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+RUN pip3 install --upgrade pip
+RUN pip3 install -r requirements.txt
 # Expose port
 EXPOSE 80
 # Start the app
