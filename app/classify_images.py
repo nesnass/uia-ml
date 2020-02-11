@@ -107,11 +107,9 @@ class NodeLookup(object):
 
     def load(self, label_lookup_path, uid_lookup_path):
         """Loads a human readable English name for each softmax node.
-
         Args:
           label_lookup_path: string UID to integer node ID.
           uid_lookup_path: string UID to human-readable string.
-
         Returns:
           dict from integer node ID to human-readable string.
         """
@@ -167,11 +165,9 @@ def create_graph():
 
 def run_inference_on_images(image_list, output_dir):
     """Runs inference on an image list.
-
     Args:
       image_list: a list of images.
       output_dir: the directory in which image vectors will be saved
-
     Returns:
       image_to_labels: a dictionary with image file keys and predicted
         text label values
@@ -247,7 +243,7 @@ def run_inference_on_images(image_list, output_dir):
                 print('Memory After Prediction', mem5 / (1024 ** 2), 'MB')
 
                 # # detect number of faces
-                num_faces = face_recognition.detect_num_faces(image)
+                num_faces = detect_num_faces(image)
                 image_to_labels['number_of_faces'].append(num_faces)
 
                 process = psutil.Process(os.getpid())
@@ -266,7 +262,29 @@ def run_inference_on_images(image_list, output_dir):
 
     return image_to_labels
 
+
+def maybe_download_and_extract():
+    """Download and extract model tar file."""
+    dest_directory = FLAGS.model_dir
+    if not os.path.exists(dest_directory):
+        os.makedirs(dest_directory)
+    filename = DATA_URL.split('/')[-1]
+    filepath = os.path.join(dest_directory, filename)
+    if not os.path.exists(filepath):
+        def _progress(count, block_size, total_size):
+            sys.stdout.write('\r>> Downloading %s %.1f%%' % (
+                filename, float(count * block_size) / float(total_size) * 100.0))
+            sys.stdout.flush()
+
+        filepath, _ = urllib.request.urlretrieve(DATA_URL, filepath, _progress)
+        print()
+        statinfo = os.stat(filepath)
+        print('Succesfully downloaded', filename, statinfo.st_size, 'bytes.')
+    tarfile.open(filepath, 'r:gz').extractall(dest_directory)
+
+
 def run_classify_images(image_name):
+    maybe_download_and_extract()
     output_dir = "static/image_vectors"
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
