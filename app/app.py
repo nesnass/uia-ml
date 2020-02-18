@@ -89,5 +89,11 @@ def result_string(result):
     return 'Result: %s!' % result
 
 
+@app.route('/neighbours', methods=['GET'])
+def neighbours():
+    return render_template("project_1.html")
+
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=80, debug=True)
+    app.run(debug=True)
+#    app.run(host='0.0.0.0', port=80, debug=True)
