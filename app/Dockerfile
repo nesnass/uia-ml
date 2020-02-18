@@ -1,4 +1,4 @@
-FROM python:3.7.6-buster
+FROM python3.7-nodejs13
 # Copy our application code
 WORKDIR /var/app
 COPY . .
