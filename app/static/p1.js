@@ -9,7 +9,6 @@ var svg = d3.select("body")
 
 var imgs = svg.selectAll("image").data([0]);
 for (i = 0; i < 760; i++) {
-    console.log("static/".concat(mydata[i].image)))
     imgs.enter()
         .append("svg:image")
         .attr("xlink:href", mydata[i].image)

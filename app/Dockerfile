@@ -1,4 +1,4 @@
-FROM node:10
+#FROM node:10
 FROM python:3.7.6-buster
 # Copy our application code
 WORKDIR /var/app
