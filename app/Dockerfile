@@ -1,6 +1,6 @@
-#FROM python:3.7.6-buster
+FROM node:10
+FROM python:3.7.6-buster
 # Copy our application code
-FROM nikolaik/python-nodejs:latest
 WORKDIR /var/app
 COPY . .
 COPY requirements.txt .
