@@ -8,7 +8,7 @@ import psutil
 from flask import Flask, request, redirect, render_template, jsonify
 from werkzeug.utils import secure_filename
 from timeit import default_timer as timer
-
+import cv2
 import classify_images
 import cluster_vectors
 
@@ -32,6 +32,16 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def resize_image(image_name):
+    img = cv2.imread(image_name, cv2.IMREAD_UNCHANGED)
+    scale_percent = 40000/img.shape[0]  # around 400px height
+    width = int(img.shape[1] * scale_percent / 100)
+    height = int(img.shape[0] * scale_percent / 100)
+    dim = (width, height)
+    # resize image
+    resized = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
+    cv2.imwrite(image_name, resized)
+    return
 
 @app.route("/api", methods=['POST'])
 def api():
@@ -54,6 +64,7 @@ def api():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(filename)
+        resize_image(filename)
         image_name = filename
         image_output = 'static/image_vectors/' + image_name + '.npz'
         file = pathlib.Path(image_output)
