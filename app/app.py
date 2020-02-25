@@ -34,7 +34,7 @@ def allowed_file(filename):
 
 def resize_image(image_name):
     img = cv2.imread(image_name, cv2.IMREAD_UNCHANGED)
-    scale_percent = 40000/img.shape[0]  # around 400px height
+    scale_percent = 45000/img.shape[0]  # around 400px height
     width = int(img.shape[1] * scale_percent / 100)
     height = int(img.shape[0] * scale_percent / 100)
     dim = (width, height)
