@@ -1,4 +1,5 @@
 from __future__ import absolute_import, division, print_function
+from google.cloud import error_reporting
 
 import json
 import os
@@ -14,6 +15,7 @@ import cluster_vectors
 
 app = Flask(__name__, template_folder='template')
 app.secret_key = "v9y/B?E(H+MbQeTh"
+error_client = error_reporting.Client()
 
 @app.route('/', methods=['GET'])
 def hello():
@@ -46,6 +48,7 @@ def resize_image(image_name):
 @app.route("/api", methods=['POST'])
 def api():
     if request.method == 'POST':
+      try:
         process = psutil.Process(os.getpid())
         mem0 = process.memory_info().rss
         print('Memory Usage Before Action', mem0 / (1024 ** 2), 'MB')
@@ -93,7 +96,8 @@ def api():
         print('Memory Increase After Action', (mem1 - mem0) / (1024 ** 2), 'MB')
 
         return jsonify(output_list)
-
+      except Exception:
+        client.report_exception()
 
 @app.route('/result/<result>')
 def result_string(result):
