@@ -29,23 +29,22 @@ def upload():
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
-
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def resize_image(image_name):
-    img = cv2.imread(image_name, cv2.IMREAD_UNCHANGED)
+def resize_image(original_file_path):
+    img = cv2.imread(original_file_path, cv2.IMREAD_UNCHANGED)
     scale_percent = 45000/img.shape[0]  # around 400px height
     width = int(img.shape[1] * scale_percent / 100)
     height = int(img.shape[0] * scale_percent / 100)
     dim = (width, height)
     # resize image
     resized = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
-    cv2.imwrite(image_name, resized)
+    cv2.imwrite(original_file_path, resized)
     return
 
-@app.route("/api", methods=['POST'])
+@app.route("/api/userimage", methods=['POST'])
 def api():
     if request.method == 'POST':
       try:
@@ -53,6 +52,10 @@ def api():
         mem0 = process.memory_info().rss
         print('Memory Usage Before Action', mem0 / (1024 ** 2), 'MB')
         start = timer()
+
+        temp_dir = os.getcwd() + '/tmp'
+        if not os.path.isdir(temp_dir):
+          os.makedirs(temp_dir)
 
         # check if the post request has the file part
         if 'file' not in request.files:
@@ -65,29 +68,33 @@ def api():
             print('No selected file')
             return redirect(request.url)
         if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(filename)
-        resize_image(filename)
-        image_name = filename
-        image_output = 'static/image_vectors/' + image_name + '.npz'
-        file = pathlib.Path(image_output)
-        if not file.exists():
-            classify_images.run_classify_images(image_name)
-            cluster_vectors.cluster_vectors(image_name)
+            original_filename = secure_filename(file.filename)
+            original_file_path = os.path.join(temp_dir, original_filename)
+            # file.save(original_filename)
+            file.save(original_file_path)
+            print('Saved upload to file: ', original_file_path)
 
-            mem11 = process.memory_info().rss
-            print('Memory After Classification and Clustering', mem11 / (1024 ** 2), 'MB')
-            os.remove(filename)
-        s = 'static/nearest_neighbors/' + image_name.split('.')[0] + '.json'
-        output_list = []
-        with open(s) as json_file:
-            data = json.load(json_file)
-        with open('image_to_labels.json', "rb") as infile:
-            labels = json.load(infile)
-        output_list.append(data)
-        output_list.append(labels)
-        os.remove(image_output)
-        os.remove(s)
+        resize_image(original_file_path)
+        classify_images.run_classify_images(original_file_path, temp_dir)
+        cluster_vectors.cluster_vectors(original_file_path)
+
+        mem11 = process.memory_info().rss
+        print('Memory After Classification and Clustering', mem11 / (1024 ** 2), 'MB')
+        os.remove(original_file_path)
+
+        nn_file_path = os.path.join(os.getcwd(), 'tmp', 'nearest_neighbors', original_filename.split('.')[0] + '.json')
+        #output_list = []
+        with open(nn_file_path) as nn_file:
+            data = json.load(nn_file)
+        image_to_labels_path = os.path.join(os.getcwd(), 'app', 'image_to_labels.json')
+        with open(image_to_labels_path, "rb") as itl_file:
+            labels = json.load(itl_file)
+        #output_list.append(data)
+        #output_list.append(labels)
+        output_list = [data, labels]
+        npz_file_path = temp_dir + '/' + original_filename + '.npz'
+        os.remove(npz_file_path)
+        os.remove(nn_file_path)
 
         end = timer()
         print('Total time = ' + str(end - start))  # Time in seconds, e.g. 5.38091952400282
@@ -96,8 +103,10 @@ def api():
         print('Memory Increase After Action', (mem1 - mem0) / (1024 ** 2), 'MB')
 
         return jsonify(output_list)
-      except Exception:
-        client.report_exception()
+      except Exception as e:
+        s = str(e)
+        print(s)
+        error_client.report_exception()
 
 @app.route('/result/<result>')
 def result_string(result):
@@ -111,4 +120,4 @@ def neighbours():
 
 if __name__ == '__main__':
     app.run(debug=True)
-# app.run(host='0.0.0.0', port=80, debug=True)
+#app.run(host='0.0.0.0', port=80, debug=True)

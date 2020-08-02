@@ -1,1 +1,27 @@
-{"image_labels": [{"labels": "web site, website, internet site, site", "score": "0.9442233"}, {"labels": "menu", "score": "0.003072077"}, {"labels": "envelope", "score": "0.001097995"}, {"labels": "bannister, banister, balustrade, balusters, handrail", "score": "0.00047335768"}, {"labels": "analog clock", "score": "0.00040019208"}], "number_of_faces": [0]}
+{
+  "image_labels": [
+    {
+      "labels": "jersey, T-shirt, tee shirt",
+      "score": "0.3144623"
+    },
+    {
+      "labels": "maillot",
+      "score": "0.07647029"
+    },
+    {
+      "labels": "apron",
+      "score": "0.064982295"
+    },
+    {
+      "labels": "comic book",
+      "score": "0.06175149"
+    },
+    {
+      "labels": "packet",
+      "score": "0.044831842"
+    }
+  ],
+  "number_of_faces": [
+    0
+  ]
+}

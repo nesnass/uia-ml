@@ -8,7 +8,7 @@ This is a modification of the classify_images.py
 script in Tensorflow. The original script produces
 string labels for input images (e.g. you input a picture
 of a cat and the script returns the string "cat"); this
-modification reads in a directory of images and 
+modification reads in a directory of images and
 generates a vector representation of the image using
 the penultimate layer of neural network weights.
 
@@ -68,6 +68,9 @@ from scipy import spatial
 from six.moves import urllib
 from werkzeug.utils import secure_filename
 from timeit import default_timer as timer
+import sys
+
+sys.argv = sys.argv[:1]
 
 tf.config.optimizer.set_jit(True)
 tf.compat.v1.enable_eager_execution()
@@ -253,14 +256,6 @@ def run_inference_on_images(image_list, output_dir):
                 mem5 = process.memory_info().rss
                 print('Memory After Prediction', mem5 / (1024 ** 2), 'MB')
 
-                # # detect number of faces
-                num_faces = face_recognition.detect_num_faces(image)
-                image_to_labels['number_of_faces'].append(num_faces)
-
-                process = psutil.Process(os.getpid())
-                mem6 = process.memory_info().rss
-                print('Memory After Face Detection', mem6 / (1024 ** 2), 'MB')
-
                 # close the open file handlers
                 proc = psutil.Process()
                 open_files = proc.open_files()
@@ -268,8 +263,9 @@ def run_inference_on_images(image_list, output_dir):
                 for open_file in open_files:
                     file_handler = getattr(open_file, "fd")
                     os.close(file_handler)
-            except:
-                print('could not process image index', image_index, 'image', image)
+            except Exception as e:
+              s = str(e)
+              print('could not process image index', image_index, 'image', image)
 
     return image_to_labels
 
@@ -294,17 +290,24 @@ def maybe_download_and_extract():
     tarfile.open(filepath, 'r:gz').extractall(dest_directory)
 
 
-def run_classify_images(image_name):
+def run_classify_images(original_file_path, output_dir):
     maybe_download_and_extract()
-    output_dir = "static/image_vectors"
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
 
-    images = glob.glob(image_name)
+    images = glob.glob(original_file_path)
 
     image_to_labels = run_inference_on_images(images, output_dir)
+
+    # detect number of faces
+    num_faces = face_recognition.detect_num_faces(original_file_path)
+    image_to_labels['number_of_faces'].append(num_faces)
+
+    process = psutil.Process(os.getpid())
+    mem6 = process.memory_info().rss
+    print('Memory After Face Detection', mem6 / (1024 ** 2), 'MB')
 
     with open("image_to_labels.json", "w") as img_to_labels_out:
         json.dump(image_to_labels, img_to_labels_out)
 
-    print("all done")
+    print("calssification done")

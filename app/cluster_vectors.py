@@ -3,7 +3,7 @@ from scipy import spatial
 import json, glob, os
 import numpy as np
 
-def cluster_vectors(name):
+def cluster_vectors(original_file_path):
   # data structures
   file_index_to_file_name = {}
   file_index_to_file_vector = {}
@@ -12,27 +12,41 @@ def cluster_vectors(name):
   dims = 2048
   n_nearest_neighbors = 30
   trees = 10000
-  infiles = glob.glob('static/image_vectors/*.npz')
+  # stock_vectors are the source image vectors we are comparing the new image to
+  stock_vector_path = os.path.join(os.getcwd(), 'app', 'static', 'image_vectors')
+  stock_vectors = glob.glob(stock_vector_path + '/*.npz')
 
-  # build ann index
-  t = AnnoyIndex(dims)
-  for file_index, i in enumerate(infiles):
-    file_vector = np.loadtxt(i)
-    file_name = os.path.basename(i).split('.')[0]
-    file_index_to_file_name[file_index] = file_name
-    file_index_to_file_vector[file_index] = file_vector
-    t.add_item(file_index, file_vector)
+  # build an index of source images
+  t = AnnoyIndex(dims, 'angular')
+  for index, item in enumerate(stock_vectors):
+    file_vector = np.loadtxt(item)
+    file_name = os.path.basename(item).split('.')[0]
+    file_index_to_file_name[index] = file_name
+    file_index_to_file_vector[index] = file_vector
+    t.add_item(index, file_vector)
+
+  # include the new user image
+  index = index + 1
+  file_basename = os.path.basename(original_file_path)
+  npz_file_path = os.path.join(os.getcwd(), 'tmp', file_basename + '.npz')
+  file_vector = np.loadtxt(npz_file_path)
+  file_name = os.path.basename(original_file_path).split('.')[0]
+  file_index_to_file_name[index] = file_name
+  file_index_to_file_vector[index] = file_vector
+  t.add_item(index, file_vector)
+
   t.build(trees)
 
   # create a nearest neighbors json file for the image
-  if not os.path.exists('static/nearest_neighbors'):
-    os.makedirs('static/nearest_neighbors')
-  i = [num for num, val in file_index_to_file_name.items() if val == name.split('.')[0]][0]
-  master_file_name = file_index_to_file_name[i]
-  master_vector = file_index_to_file_vector[i]
+  nnpath = os.path.join(os.getcwd(), 'tmp', 'nearest_neighbors')
+  if not os.path.exists(nnpath):
+    os.makedirs(nnpath)
+  # i = [num for num, val in file_index_to_file_name.items() if val == filename.split('.')[0]][0]
+  master_file_name = file_index_to_file_name[index]
+  master_vector = file_index_to_file_vector[index]
 
   named_nearest_neighbors = []
-  nearest_neighbors = t.get_nns_by_item(i, n_nearest_neighbors)
+  nearest_neighbors = t.get_nns_by_item(index, n_nearest_neighbors)
   for j in nearest_neighbors:
     neighbor_file_name = file_index_to_file_name[j]
     neighbor_file_vector = file_index_to_file_vector[j]
@@ -45,5 +59,8 @@ def cluster_vectors(name):
       'similarity': rounded_similarity
     })
 
-  with open('static/nearest_neighbors/' + master_file_name + '.json', 'w') as out:
+  json_output_file = os.path.join(nnpath, master_file_name + '.json')
+  with open(json_output_file, 'w') as out:
     json.dump(named_nearest_neighbors, out)
+  t.unload()
+  print("clustering done")
