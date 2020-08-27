@@ -1,4 +1,4 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/organic-nation-267514/uia-p1-ml', '.']
-images: ['gcr.io/organic-nation-267514/uia-p1-ml']
+  args: ['build', '-t', 'gcr.io/organic-nation-267514/uia-p3-ml', '.']
+images: ['gcr.io/organic-nation-267514/uia-p3-ml']
