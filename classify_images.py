@@ -307,7 +307,7 @@ def run_classify_images(original_file_path, output_dir):
     mem6 = process.memory_info().rss
     print('Memory After Face Detection', mem6 / (1024 ** 2), 'MB')
 
-    image_to_labels_path = os.path.join(os.getcwd(), 'image_to_labels.json')
+    image_to_labels_path = os.path.join(os.getcwd(), 'tmp', 'image_to_labels.json')
     with open(image_to_labels_path, "w") as img_to_labels_out:
         json.dump(image_to_labels, img_to_labels_out)
 
