@@ -8,7 +8,7 @@ file_index_to_file_name = {}
 file_index_to_file_vector = {}
 
 # stock_vectors are the source image vectors we are comparing the new image to
-stock_vector_path = os.path.join(os.getcwd(), 'app', 'static', 'image_vectors')
+stock_vector_path = os.path.join(os.getcwd(), 'static', 'image_vectors')
 stock_vectors = glob.glob(stock_vector_path + '/*.npz')
 for index, item in enumerate(stock_vectors):
   file_vector = np.loadtxt(item)
