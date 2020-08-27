@@ -1,5 +1,5 @@
 from __future__ import absolute_import, division, print_function
-from google.cloud import error_reporting
+#from google.cloud import error_reporting
 
 import json
 import os
@@ -16,7 +16,7 @@ import cluster_vectors
 
 app = Flask(__name__, template_folder='template')
 app.secret_key = "v9y/B?E(H+MbQeTh"
-error_client = error_reporting.Client()
+#error_client = error_reporting.Client()
 keepImages = False
 
 @app.route('/', methods=['GET'])
@@ -98,7 +98,7 @@ def process_image(request):
       nn_file_path = os.path.join(os.getcwd(), 'tmp', 'nearest_neighbors', original_filename.split('.')[0] + '.json')
       with open(nn_file_path) as nn_file:
           data = json.load(nn_file)
-      image_to_labels_path = os.path.join(os.getcwd(), 'app', 'image_to_labels.json')
+      image_to_labels_path = os.path.join(os.getcwd(), 'image_to_labels.json')
       with open(image_to_labels_path, "rb") as itl_file:
           labels = json.load(itl_file)
       output_list = []
@@ -121,7 +121,7 @@ def process_image(request):
     except Exception as e:
       s = str(e)
       print(s)
-      error_client.report_exception()
+      #error_client.report_exception()
 
 @app.route('/result/<result>')
 def result_string(result):
