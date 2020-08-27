@@ -80,10 +80,10 @@ def process_image(request):
       image_to_labels_path = os.path.join(os.getcwd(), 'image_to_labels.json')
       with open(image_to_labels_path, "rb") as itl_file:
           labels = json.load(itl_file)
-      output_list = []
-      output_list.append(data)
-      output_list.append(labels)
-      #output_list = [data, labels]
+      #output_list = []
+      #output_list.append(data)
+      #output_list.append(labels)
+      output_list = [data, labels]
       npz_file_path = temp_dir + '/' + original_filename + '.npz'
       if not keepImages:
         os.remove(npz_file_path)
