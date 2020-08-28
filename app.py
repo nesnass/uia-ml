@@ -105,11 +105,11 @@ def process_image(request):
 
 @app.route('/', methods=['GET'])
 def hello():
-    return "Hello World!"
+  return "Hello World!"
 
 @app.route('/upload', methods=['GET'])
 def upload():
-    return render_template("file_upload_form.html")
+  return render_template("file_upload_form.html")
 
 #@app.route('/api/stockimage', methods=['POST'])
 #def stock_image():
@@ -125,13 +125,11 @@ def user_image():
 
 @app.route('/result/<result>')
 def result_string(result):
-    return 'Result: %s!' % result
+  return 'Result: %s!' % result
 
 @app.route('/neighbours', methods=['GET'])
 def neighbours():
-    return render_template("project_1.html")
+  return render_template("project_1.html")
 
 if __name__ == '__main__':
-    app.run(debug=True)
-else:
-    app.run(host='0.0.0.0', port=80)
+  app.run(host='0.0.0.0', port=80)
