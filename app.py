@@ -98,7 +98,7 @@ def process_image(request):
       nn_file_path = os.path.join(os.getcwd(), 'tmp', 'nearest_neighbors', original_filename.split('.')[0] + '.json')
       with open(nn_file_path) as nn_file:
           data = json.load(nn_file)
-      image_to_labels_path = os.path.join(os.getcwd(), 'image_to_labels.json')
+      image_to_labels_path = os.path.join(os.getcwd(), 'tmp', 'image_to_labels.json')
       with open(image_to_labels_path, "rb") as itl_file:
           labels = json.load(itl_file)
       output_list = []
@@ -110,6 +110,7 @@ def process_image(request):
         os.remove(npz_file_path)
         os.remove(nn_file_path)
         os.remove(original_file_path)
+        os.remove(image_to_labels_path)
 
       end = timer()
       print('Total time = ' + str(end - start))  # Time in seconds, e.g. 5.38091952400282
