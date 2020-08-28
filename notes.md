@@ -12,6 +12,10 @@ Dockerfile will instruct Docker to start as:
 `gunicorn", "-b", ":80", "main:app`
 This will run in production mode using Gunicorn web sever
 
+### Testing Docker image locally
+`docker build -t uia-ml-p3`
+`docker run uia-p3-ml:latest`
+
 ## Production (local)
 First configure a virtual environment, else Google Cloud products can't be found
 `pip install virtualenv`

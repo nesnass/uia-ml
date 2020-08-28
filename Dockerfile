@@ -14,4 +14,4 @@ EXPOSE 80
 ENTRYPOINT ["gunicorn"]
 #CMD ["app.py"]
 #CMD ["python3", "-m", "flask", "run", "--host=0.0.0.0", "--port=80"]
-CMD [-b", ":80", "main:app"]
+CMD ["-b", ":80", "main:app"]
