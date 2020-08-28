@@ -32,3 +32,8 @@ VM Container looks for the build tagged 'latest' e.g. `gcr.io/organic-nation-267
 However the VM may need to be restarted to use the new image/container
 Refer to Cloud Build Triggers.
 
+## Creating a new instance + container with the newly build docker image on the Google Container Registry
+** Important **
+Without using Cloud Run, it seems the VM instance will not receive the new image to its container, so create a new instance instead:
+`gcloud compute instances create-with-container uia-ml-p3-3 --container-image gcr.io/organic-nation-267514/uia-p3-ml:latest`
+ - This also requires deploying a new app code to App Engine with an updated SIMILARITY_API in app.yaml
