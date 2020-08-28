@@ -34,7 +34,7 @@ def cluster_vectors(original_file_path):
   file_index_to_file_vector[userImageIndex] = master_vector
 
   # build an index of source images
-  t = AnnoyIndex(dims, 'angular')
+  t = AnnoyIndex(dims, metric='angular')
   for key in file_index_to_file_vector:
     t.add_item(key, file_index_to_file_vector[key])
 
@@ -50,7 +50,7 @@ def cluster_vectors(original_file_path):
   #master_vector = file_index_to_file_vector[index]
 
   named_nearest_neighbors = []
-  nearest_neighbors = t.get_nns_by_item(index, n_nearest_neighbors)
+  nearest_neighbors = t.get_nns_by_item(userImageIndex, n_nearest_neighbors)
   for j in nearest_neighbors:
     neighbor_file_name = file_index_to_file_name[j]
     neighbor_file_vector = file_index_to_file_vector[j]

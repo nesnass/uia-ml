@@ -5,13 +5,6 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Python: App",
-      "type": "python",
-      "request": "launch",
-      "program": "app.py",
-      "console": "integratedTerminal"
-    },
-    {
       "name": "Python: Flask",
       "type": "python",
       "request": "launch",
