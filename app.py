@@ -1,5 +1,5 @@
 from __future__ import absolute_import, division, print_function
-#from google.cloud import error_reporting
+from google.cloud import error_reporting
 
 import json
 import os
@@ -16,17 +16,8 @@ import cluster_vectors
 
 app = Flask(__name__, template_folder='template')
 app.secret_key = "v9y/B?E(H+MbQeTh"
-#error_client = error_reporting.Client()
+error_client = error_reporting.Client()
 keepImages = False
-
-@app.route('/', methods=['GET'])
-def hello():
-    return "Hello World!"
-
-@app.route('/upload', methods=['GET'])
-def upload():
-    return render_template("file_upload_form.html")
-
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
@@ -44,18 +35,6 @@ def resize_image(original_file_path):
     resized = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
     cv2.imwrite(original_file_path, resized)
     return
-
-#@app.route('/api/stockimage', methods=['POST'])
-#def stock_image():
-#  global keepImages
-#  keepImages = True
-#  return process_image(request)
-
-@app.route("/api/userimage", methods=['POST'])
-def user_image():
-  global keepImages
-  keepImages = False
-  return process_image(request)
 
 def process_image(request):
   global keepImages
@@ -101,10 +80,10 @@ def process_image(request):
       image_to_labels_path = os.path.join(os.getcwd(), 'tmp', 'image_to_labels.json')
       with open(image_to_labels_path, "rb") as itl_file:
           labels = json.load(itl_file)
-      output_list = []
-      output_list.append(data)
-      output_list.append(labels)
-      #output_list = [data, labels]
+      #output_list = []
+      #output_list.append(data)
+      #output_list.append(labels)
+      output_list = [data, labels]
       npz_file_path = temp_dir + '/' + original_filename + '.npz'
       if not keepImages:
         os.remove(npz_file_path)
@@ -122,18 +101,37 @@ def process_image(request):
     except Exception as e:
       s = str(e)
       print(s)
-      #error_client.report_exception()
+      error_client.report_exception()
+
+@app.route('/', methods=['GET'])
+def hello():
+    return "Hello World!"
+
+@app.route('/upload', methods=['GET'])
+def upload():
+    return render_template("file_upload_form.html")
+
+#@app.route('/api/stockimage', methods=['POST'])
+#def stock_image():
+#  global keepImages
+#  keepImages = True
+#  return process_image(request)
+
+@app.route("/api/userimage", methods=['POST'])
+def user_image():
+  global keepImages
+  keepImages = False
+  return process_image(request)
 
 @app.route('/result/<result>')
 def result_string(result):
     return 'Result: %s!' % result
 
-
 @app.route('/neighbours', methods=['GET'])
 def neighbours():
     return render_template("project_1.html")
 
-
 if __name__ == '__main__':
     app.run(debug=True)
-#app.run(host='0.0.0.0', port=80, debug=True)
+else:
+    app.run(host='0.0.0.0', port=80)
