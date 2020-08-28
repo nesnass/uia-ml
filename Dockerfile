@@ -11,7 +11,7 @@ EXPOSE 80
 # Start the app
 #ENV FLASK_APP=main.py
 
-#ENTRYPOINT ["python3"]
+ENTRYPOINT ["gunicorn"]
 #CMD ["app.py"]
 #CMD ["python3", "-m", "flask", "run", "--host=0.0.0.0", "--port=80"]
-CMD ["gunicorn", "-b", ":80", "main:app"]
+CMD [-b", ":80", "main:app"]
