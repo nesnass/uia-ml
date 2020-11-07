@@ -62,7 +62,9 @@ def process_image(request):
           print('No selected file')
           return redirect(request.url)
       if file and allowed_file(file.filename):
-          newname = uuid.uuid4().hex + '.' + file.filename.split('.')[1]
+          newname = file.filename
+          if not keepImages:
+            newname = uuid.uuid4().hex + '.' + file.filename.split('.')[1]
           original_filename = secure_filename(newname)
           original_file_path = os.path.join(temp_dir, original_filename)
           # file.save(original_filename)

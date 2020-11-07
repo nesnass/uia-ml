@@ -37,3 +37,19 @@ Refer to Cloud Build Triggers.
 Without using Cloud Run, it seems the VM instance will not receive the new image to its container, so create a new instance instead:
 `gcloud compute instances create-with-container uia-ml-p3-3 --container-image gcr.io/organic-nation-267514/uia-p3-ml:latest`
  - This also requires deploying a new app code to App Engine with an updated SIMILARITY_API in app.yaml
+
+## Uploading Images
+
+### Format
+* ContentType: 'multipart/form-data'
+* attachment name: 'file', type: 'file'
+* method: POST
+
+### Stock images
+Uncomment `/api/stockimage` , run the server and visit the url `http://localhost:5000/upload` for an upload form
+Uploading images this way will keep original filenames and save both image and vector files to ./tmp
+Otherwise upload directly to this route
+
+### User Images
+`/api/upload` Uses random IDs for filenames and removes working files after processing.
+Call this route from the font-end app / website
