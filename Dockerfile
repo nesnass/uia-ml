@@ -4,6 +4,10 @@ WORKDIR /var/app
 COPY . .
 COPY requirements.txt .
 # Fetch app specific dependencies
+RUN apt-get update ##[edited]
+RUN apt-get install 'ffmpeg'\
+    'libsm6'\
+    'libxext6'  -y
 RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 # Expose port

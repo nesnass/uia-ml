@@ -13,7 +13,7 @@ Dockerfile will instruct Docker to start as:
 This will run in production mode using Gunicorn web sever
 
 ### Testing Docker image locally
-`docker build -t uia-ml-p3`
+`docker build -t uia-ml-p3 ./`
 `docker run uia-p3-ml:latest`
 
 ## Production (local)
@@ -36,7 +36,7 @@ Refer to Cloud Build Triggers.
 ** Important **
 Without using Cloud Run, it seems the VM instance will not receive the new image to its container, so create a new instance instead:
 `gcloud compute instances create-with-container uia-ml-p3-3 --container-image gcr.io/organic-nation-267514/uia-p3-ml:latest`
- - This also requires deploying a new app code to App Engine with an updated SIMILARITY_API in app.yaml
+ - This also requires deploying a new app code to App Engine with an updated SIMILARITY_API in app.yaml: `gcloud app deploy`
 
 ## Uploading Images
 

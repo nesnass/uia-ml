@@ -61,7 +61,7 @@ from collections import defaultdict
 import cv2
 import numpy as np
 import psutil
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 from annoy import AnnoyIndex
 from flask import Flask, request, redirect, render_template, jsonify
 from scipy import spatial
