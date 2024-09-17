@@ -1,5 +1,4 @@
 from __future__ import absolute_import, division, print_function
-from google.cloud import error_reporting
 
 import json
 import os
@@ -7,7 +6,7 @@ import os.path
 import pathlib
 import psutil
 import uuid
-from flask import Flask, request, redirect, render_template, jsonify
+from flask import Flask, request, redirect, render_template, jsonify, send_file
 from werkzeug.utils import secure_filename
 from timeit import default_timer as timer
 import cv2
@@ -16,7 +15,7 @@ import cluster_vectors
 
 app = Flask(__name__, template_folder='template')
 app.secret_key = "v9y/B?E(H+MbQeTh"
-error_client = error_reporting.Client()
+
 keepImages = False
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
@@ -105,7 +104,13 @@ def process_image(request):
     except Exception as e:
       s = str(e)
       print(s)
-      error_client.report_exception()
+
+def get_image(request):
+   if request.method == 'GET':
+    args = request.args
+    filename = args.get("name")
+    img_path = "./static/image_final/" + filename + ".jpeg"
+    return img_path
 
 @app.route('/', methods=['GET'])
 def hello():
@@ -135,5 +140,10 @@ def result_string(result):
 def neighbours():
   return render_template("project_1.html")
 
+@app.route('/api/image', methods=['GET'])
+def myapp():
+    image = get_image(request)
+    return send_file(image, mimetype='image/jpg')
+
 if __name__ == '__main__':
-  app.run(debug=True)
+  app.run(port=3100, debug=True)

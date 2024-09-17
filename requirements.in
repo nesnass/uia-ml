@@ -1,0 +1,11 @@
+scipy
+opencv_contrib_python
+tensorflow
+numpy
+Werkzeug
+psutil
+annoy
+six
+Flask
+gunicorn
+

@@ -1,5 +1,18 @@
 # Environemnts
 
+#### Using a Python virtual environment
+
+From the project root:
+
+> python3.11 -m venv ./python/venv
+> source ./python/venv/bin/activate
+> TMPDIR=./piptmp/ ./python/venv/bin/python -m pip install -r ./requirements.txt
+
+If any requirements are added, remember to update `requirements.in` and then run:
+
+> ./python/venv/bin/python -m piptools compile ./requirements.in
+
+
 ## Debugging
 Run as:
 `python3 main.py`
